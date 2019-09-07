@@ -4,6 +4,7 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
+    "complie": "tsc",
     "start": "electron ."
   },
   "repository": "https://github.com/electron/electron-quick-start",
@@ -17,6 +18,10 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@types/node": "^12.7.4",
     "electron": "^6.0.7"
+  },
+  "dependencies": {
+    "ccts": "^1.1.9"
   }
 }
