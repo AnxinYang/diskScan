@@ -1,0 +1,81 @@
+* {
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  border: 0;
+  box-sizing: border-box;
+  text-align: left;
+  vertical-align: baseline;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  color: white;
+}
+
+body {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+}
+
+label {
+  font-weight: bold;
+}
+
+.warper {
+  padding: 4px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#root {
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  padding: 32px;
+  max-width: 500px;
+  margin: auto;
+}
+
+#tip-selection label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+#tip-selection section {
+  display: flex;
+}
+
+#tip-selection div {
+  padding: 8px 8px;
+  text-align: center;
+  border: 1px solid #484848;
+  flex-grow: 1;
+  color: #c8c8c8;
+  transition: 0.3s;
+}
+
+#tip-selection div strong,
+span {
+  display: block;
+  font-size: 12px;
+  color: inherit;
+  text-align: center;
+}
+
+#tip-selection div span:nth-of-type(even) {
+  margin-bottom: 32px;
+}
+
+#tip-selection div strong {
+  font-size: 8px;
+  color: gray;
+}
+
+/*# sourceMappingURL=main.css.map */

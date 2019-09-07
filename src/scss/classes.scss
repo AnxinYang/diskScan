@@ -1,0 +1,11 @@
+.warper {
+    padding: 4px;
+    overflow: hidden;
+    position: absolute;
+}
+
+.title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
