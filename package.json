@@ -4,8 +4,12 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "complie": "tsc",
-    "start": "electron ."
+    "start": "electron .",
+    "tsc": "tsc",
+    "build": "webpack -p --config webpack.config.production.js",
+    "server": "webpack-dev-server --config webpack.config.dev.js",
+    "dev": "webpack --config webpack.config.dev.js --watch",
+    "scss": "sass --watch src/main.scss build/main.css"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

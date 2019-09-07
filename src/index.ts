@@ -1,11 +1,10 @@
-import { Stats } from "fs";
-import { promises as fp } from 'fs';
+import { Stats, promises as fp } from 'fs';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import cc, { ccd3 as d3 } from 'ccts';
 
 import treemap from './treemap';
+
 
 function makePromise(executor: (resolve: (value?: unknown) => void, reject: (reason?: any) => void) => void) {
     return new Promise(executor);
@@ -13,8 +12,8 @@ function makePromise(executor: (resolve: (value?: unknown) => void, reject: (rea
 
 
 
-exports.index = function () {
-    let rootPath = 'w:/diskScan/';
+export default function () {
+    let rootPath = 'd:/Steam/';
     readFolder(rootPath)
         .then(function (res) {
             console.log(res);

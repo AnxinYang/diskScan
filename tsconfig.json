@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
-        "target": "es5",
+        "target": "es6",
         "watch": true,
-        "module": "commonJS",
+        "module": "esnext",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -10,7 +10,7 @@
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        "importHelpers": true,
+        "outDir": "./dist",
         "lib": [
             "es6",
             "dom"

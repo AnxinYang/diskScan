@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { ccd3 as d3 } from 'ccts';
 
 export default function (containerID: string, data: {}) {
     console.log(containerID);
@@ -11,7 +11,8 @@ export default function (containerID: string, data: {}) {
         .size([500, 500])
         .tile(d3.treemapResquarify)
         .round(true)
-        .paddingInner(1);
+        .paddingInner(5)
+        .paddingOuter(16);
 
     let root = d3.hierarchy(data);
 
@@ -21,13 +22,22 @@ export default function (containerID: string, data: {}) {
 
     treemap(root);
 
-    svg
-        .selectAll('rect')
+    let nodes = svg.append('g')
+        .selectAll('g')
         .data(root.descendants())
         .enter()
-        .append('rect')
-        .attr('x', function (d: any) { return d.x0; })
-        .attr('y', function (d: any) { return d.y0; })
+        .append('g')
+        .attr('transform', function (d: any) { return 'translate(' + [d.x0, d.y0] + ')' });
+
+    nodes.append('rect')
+        .attr('fill', 'rgba(255, 165, 2, .3)')
         .attr('width', function (d: any) { return d.x1 - d.x0; })
-        .attr('height', function (d: any) { return d.y1 - d.y0; })
+        .attr('height', function (d: any) { return d.y1 - d.y0; });
+
+    nodes.append('text')
+        .attr('dx', 4)
+        .attr('dy', 14)
+        .text(function (d: { data: any }) {
+            return d.data.name;
+        })
 }
