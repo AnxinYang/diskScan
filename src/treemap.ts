@@ -11,6 +11,14 @@ window.addEventListener('resize', function () {
     CURRENT_DATA && Treemap(CONTAINER, CURRENT_DATA.path);
 });
 
+
+let treemap = d3.treemap()
+    .tile(d3.treemapBinary)
+    .round(true)
+    .paddingInner(4)
+    .paddingOuter(4);
+
+
 let Treemap = function (containerSelector: string, key: string) {
     CURRENT_DATA = Object.assign({}, store.get(key));
     CONTAINER = containerSelector;
@@ -23,15 +31,11 @@ let Treemap = function (containerSelector: string, key: string) {
 
     let { width, height } = document.querySelector(containerSelector).getBoundingClientRect();
 
-    let treemap = d3.treemap()
-        .size([width, height])
-        .tile(d3.treemapBinary)
-        .round(true)
-        .paddingInner(4)
-        .paddingOuter(4);
+    treemap.size([width, height]);
 
     CURRENT_DATA._value = CURRENT_DATA.value;
     CURRENT_DATA.value = 0;
+    CURRENT_DATA.children = store.get(`_children_` + CURRENT_DATA.path);
 
 
     let root = d3.hierarchy(CURRENT_DATA);
@@ -56,7 +60,7 @@ let Treemap = function (containerSelector: string, key: string) {
         .exit()
         .remove();
 
-    let warpers = svg.selectAll('.warper')
+    svg.selectAll('.warper')
         .data(treeData)
         .enter()
         // Warper
@@ -68,23 +72,16 @@ let Treemap = function (containerSelector: string, key: string) {
         // Content container
         .append('div')
         .classed('content-container', true)
-        .style('width', '100%')
-        .style('height', '100%')
-        .style('overflow', 'hidden')
-        .style('display', 'flex')
-        .style('flex-direction', 'column')
         // Path
         .append('header')
         .classed('title', true)
-        .style('padding', '8px')
         .parent()
         // Children contents
         .append('div')
-        .classed('children-container', true)
-        .style('position', 'relative')
-        .style('flex-grow', 1);
+        .classed('children-container', true);
 
-    svg.selectAll('.warper')
+    let warpers = svg.selectAll('.warper')
+
         .classed('file', function (d: { data: any }) {
             return !d.data.isDirectory;
         })
@@ -102,36 +99,28 @@ let Treemap = function (containerSelector: string, key: string) {
 
             Treemap(containerSelector, d.data.path);
         })
-        .transition()
-        .delay((d: any, i: number) => i * 10)
+
+
+    warpers.select('header')
+        .text(function (d: { data: any }, i) {
+            let text = i === 0 ? '' : d.data.name + ' (' + d.data.value + 'Bytes)';
+            return text;
+        })
+
+    warpers.transition()
+        .delay((d: any, i: number) => i * 20)
         .duration(50)
         .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
         .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
         .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; });
-
-    svg.selectAll('.warper')
-        .select('header')
-        .text(function (d: { data: any }, i) {
-            let text = i === 0 ? '' : d.data.name + ' (' + d.data.value + 'Bytes)';
-            return text;
-        });
-
     //update();
-
-
-    // nodes.append('text')
-    //     .attr('dx', 4)
-    //     .attr('dy', 14)
-    //     .text(function (d: { data: any }) {
-    //         return d.data.name;
-    //     })
 }
 
 let update = function () {
     setTimeout(function () {
         Treemap(CONTAINER, CURRENT_DATA.path);
         update();
-    }, 1000)
+    }, 500)
 }
 
 function NTP(px: number) {

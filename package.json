@@ -5,10 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "tsc": "tsc",
     "build": "webpack -p --config webpack.config.production.js",
-    "server": "webpack-dev-server --config webpack.config.dev.js",
-    "dev": "webpack --config webpack.config.dev.js --watch",
+    "devRender": "webpack --config webpack.config.dev.render.js --watch",
+    "devMain": "webpack --config webpack.config.dev.main.js --watch",
     "scss": "sass --watch src/main.scss build/main.css"
   },
   "repository": "https://github.com/electron/electron-quick-start",
