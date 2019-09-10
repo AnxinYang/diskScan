@@ -1,4 +1,4 @@
 import index from './src/index';
 
 
-index('W:/');
+index('W:/ui');

@@ -7,7 +7,8 @@ let CURRENT_DATA: any;
 let CONTAINER: string;
 
 window.addEventListener('resize', function () {
-    Treemap(CONTAINER, CURRENT_DATA.path);
+
+    CURRENT_DATA && Treemap(CONTAINER, CURRENT_DATA.path);
 });
 
 let Treemap = function (containerSelector: string, key: string) {
