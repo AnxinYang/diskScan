@@ -1,75 +1,74 @@
-import { Stats, promises as fp } from 'fs';
+import { Stats, promises as fp, PathLike } from 'fs';
 import * as fs from 'fs';
 import * as path from 'path';
+import { exec } from 'child_process';
 
 
 import treemap from './treemap';
+import store from './store';
 
-
+let ROOT_PATH: PathLike;
 function makePromise(executor: (resolve: (value?: unknown) => void, reject: (reason?: any) => void) => void) {
     return new Promise(executor);
 }
 
-
-
-export default function () {
-    let rootPath = 'd:/Steam/';
-    readFolder(rootPath)
-        .then(function (res) {
-            console.log(res);
-            let data = {
-                name: rootPath,
-                children: res
-            }
-            treemap('treemap', data)
-        })
-        .catch(err => console.error(err))
-}
-
-
-
-
-function readFolder(target = './') {
-    return getStats(target)
-        .then(getList)
-        .then(convertList);
-}
-
-function getStats(target: fs.PathLike) {
-    return fp.lstat(target)
-        .then((stats): any => {
-            return [stats, target]
+export default function (target: PathLike = './') {
+    let t = path.join(<string>target, '');
+    ROOT_PATH = target;
+    readTarget(t)
+        .then(res => {
+            //res.children = store.get(t);
+            console.log(store);
+            treemap('#treemap', res.path);
         });
 }
 
-function getList([stats, target]: [Stats, fs.PathLike]) {
-    if (!stats.isDirectory()) {
-        return Promise.reject('Target is not a folder.')
+
+async function readTarget(target: PathLike, parent?: PathLike) {
+    path;
+    let stats = await fp.stat(target);
+    let obj: any;
+    let isDirectory = stats.isDirectory();
+    if (!isDirectory) {
+        obj = {
+            name: path.basename(<string>target),
+            value: stats.size,
+            //children: <any>[],
+            path: target,
+            isDirectory: isDirectory,
+            parent: parent,
+        };
+        //console.log(obj.path);
+    } else {
+        let list = await fp.readdir(target);
+        let children = [];
+        obj = {
+            name: path.basename(<string>target),
+            children: <any>[],
+            value: 0,
+            path: target,
+            isDirectory: isDirectory,
+            parent: parent,
+        }
+
+        for (let i = 0; i < list.length; i++) {
+            let item = list[i];
+            let child = await readTarget(path.join(<string>target, item), target);
+            children.push(child);
+            obj.value += child.value;
+        }
+
+        store.set(target, {
+            name: path.basename(<string>target),
+            children: children,
+            value: obj.value,
+            path: target,
+            isDirectory: isDirectory,
+            parent: parent,
+        });
+        //console.log(store.get(ROOT_PATH));
     }
 
-    return fp.readdir(target)
-        .then((items: string[]) => {
-            return [items, stats, target];
-        });
-};
+    return obj;
 
-function convertList([items, stats, target]: [string[], Stats, fs.PathLike]) {
-    let promises: Promise<any>[] = [];
-
-    items.forEach((item) => {
-        let promise = makePromise(function (resolve, reject) {
-            let childPath = path.join(<string>target, item);
-            getStats(childPath)
-                .then(([stats]) => {
-                    resolve({
-                        name: item,
-                        value: stats.size,
-                        path: childPath,
-                    })
-                })
-        });
-        promises.push(promise);
-    })
-
-    return Promise.all(promises);
 }
