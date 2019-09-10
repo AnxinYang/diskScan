@@ -12,25 +12,27 @@ window.addEventListener('resize', function () {
 });
 
 let Treemap = function (containerSelector: string, key: string) {
-    CURRENT_DATA = store.get(key);
+    CURRENT_DATA = Object.assign({}, store.get(key));
     CONTAINER = containerSelector;
 
     // d3.selectAll(containerSelector + ' .warper')
     //     .style('display', 'none');
 
     let svg = d3.select(containerSelector)
-        .style('position', `relative`)
-        .style('width', `100vw`)
-        .style('height', `100vh`);
+        .style('position', `relative`);
 
     let { width, height } = document.querySelector(containerSelector).getBoundingClientRect();
 
     let treemap = d3.treemap()
         .size([width, height])
-        //.tile(d3.treemapResquarify)
+        .tile(d3.treemapBinary)
         .round(true)
         .paddingInner(4)
         .paddingOuter(4);
+
+    CURRENT_DATA._value = CURRENT_DATA.value;
+    CURRENT_DATA.value = 0;
+
 
     let root = d3.hierarchy(CURRENT_DATA);
 
@@ -43,7 +45,7 @@ let Treemap = function (containerSelector: string, key: string) {
     let treeData: { data: any }[] = root.descendants();
 
     d3.select('#back')
-        .text(treeData[0].data.name + ' (' + treeData[0].data.value + 'Bytes)')
+        .text(treeData[0].data.name + ' (' + treeData[0].data._value + 'Bytes)')
         .on('click', function () {
             if (treeData[0].data.parent)
                 Treemap(containerSelector, treeData[0].data.parent);
@@ -60,6 +62,9 @@ let Treemap = function (containerSelector: string, key: string) {
         // Warper
         .append('div')
         .classed('warper', true)
+        .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
+        .style('width', 0)
+        .style('height', 0)
         // Content container
         .append('div')
         .classed('content-container', true)
@@ -98,7 +103,8 @@ let Treemap = function (containerSelector: string, key: string) {
             Treemap(containerSelector, d.data.path);
         })
         .transition()
-        .duration(500)
+        .delay((d: any, i: number) => i * 10)
+        .duration(50)
         .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
         .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
         .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; });
