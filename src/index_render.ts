@@ -35,11 +35,15 @@ export default function (target: string = './') {
         }
 
         store.set(target, file);
-
+        store.set('_children_' + target, [])
         console.log(target);
 
+        setTimeout(function () {
+            parent && updateAllParents(file);
+        });
+
+
         if (isDirectory) {
-            store.set('_children_' + target, [])
             setTimeout(function () {
                 let targets = fs.readdirSync(target)
                 readTargets(targets, target);
@@ -51,34 +55,28 @@ export default function (target: string = './') {
             updateTimer = setTimeout(function () {
                 treemap('#treemap', res.path);
                 updateTimer = null;
-                console.error(store)
             }, 100)
         }
 
-        return file;
+        return Object.assign({}, file);
     }
 
     function readTargets(targets: string[], parent: string) {
-        let files = [];
+
         for (let i = 0; i < targets.length; i++) {
             let item = targets[i];
-            files.push(readTarget(path.join(<string>parent, item), parent));
+            let file = readTarget(path.join(<string>parent, item), parent);
         }
-
-        updateAllParents(files, parent);
     }
 
-    function updateAllParents(files: file[], parentPath: string) {
-        let parent: file = store.get(parentPath);
-        store.get('_children_' + parent.path).push(...files);
-
-        let value = 0;
-        files.forEach(function (file) {
-            value += file.value;
-        })
-
+    function updateAllParents(file: file) {
+        let parent: file = store.get(file.parent);
+        store.get('_children_' + parent.path).push(file);
         do {
-            parent.value += value;
+            //if (!file.isDirectory) {
+            parent.value += file.value;
+            //}
+
             if (parent.parent) {
                 parent = store.get(parent.parent);
             } else {

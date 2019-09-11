@@ -108,7 +108,7 @@ let Treemap = function (containerSelector: string, key: string) {
         })
 
     warpers.transition()
-        .delay((d: any, i: number) => i * 20)
+        .delay((d: any, i: number) => i * 10)
         .duration(50)
         .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
         .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
