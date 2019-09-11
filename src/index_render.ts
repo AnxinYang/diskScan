@@ -11,80 +11,128 @@ type file = {
     value: number,
     path: string,
     isDirectory: boolean,
-    parent: string,
+    parent: file,
 }
 
+
+const LOADING_LIMIT = 4;
+let loadingArray: any[] = [];
+let currentRunning = 0;
+
+let updateTimer: NodeJS.Timeout | number;
 
 export default function (target: string = './') {
-    let t = path.join(<string>target, '');
-    let updateTimer: NodeJS.Timeout;
-    let res = readTarget(t);
-
-    treemap('#treemap', res.path);
-
-    function readTarget(target: string, parent?: string) {
-        let stats = fs.statSync(target);
-        let isDirectory = stats.isDirectory();
-        let file: file = {
-            name: path.basename(<string>target),
-            children: [],
-            value: stats.size,
-            path: target,
-            isDirectory: isDirectory,
-            parent: parent,
-        }
-
-        store.set(target, file);
-        store.set('_children_' + target, [])
-        console.log(target);
-
-        setTimeout(function () {
-            parent && updateAllParents(file);
+    readFile(target)
+        .then(function () {
+            debugger;
+            treemap('#treemap', target)
         });
+}
 
+function readFile(target: string, parent?: file) {
+    return readStats(target, parent)
+        .then(handleFile)
+}
 
-        if (isDirectory) {
-            setTimeout(function () {
-                let targets = fs.readdirSync(target)
-                readTargets(targets, target);
-            })
-        }
+function readStats(target: string, parent?: file) {
+    return fp.stat(target)
+        .then((stats) => {
+            return handleStats(stats, target, parent);
+        });
+}
 
+function handleStats(stats: Stats, target: string, parent?: file) {
+    let isDirectory = stats.isDirectory();
+    let file: file = {
+        name: path.basename(target),
+        children: [],
+        value: stats.size,
+        path: target,
+        isDirectory: isDirectory,
+        parent: parent,
+    };
 
-        if (!updateTimer) {
-            updateTimer = setTimeout(function () {
-                treemap('#treemap', res.path);
-                updateTimer = null;
-            }, 100)
-        }
+    store.set(target, file);
+    store.set(file, []);
+    //console.warn(store); // SLOW!!
+    //console.warn(target);
+    return file;
+}
 
-        return Object.assign({}, file);
-    }
-
-    function readTargets(targets: string[], parent: string) {
-
-        for (let i = 0; i < targets.length; i++) {
-            let item = targets[i];
-            let file = readTarget(path.join(<string>parent, item), parent);
-        }
-    }
-
-    function updateAllParents(file: file) {
-        let parent: file = store.get(file.parent);
-        store.get('_children_' + parent.path).push(file);
-        do {
-            //if (!file.isDirectory) {
-            parent.value += file.value;
-            //}
-
-            if (parent.parent) {
-                parent = store.get(parent.parent);
-            } else {
-                parent = null;
-            }
-        } while (parent)
+function handleFile(file: file) {
+    let isDirectory = file.isDirectory;
+    appendChildren(file);
+    if (isDirectory) {
+        handleDirectory(file);
+    } else {
+        updateSizeOfAllParents(file)
     }
 }
 
+function handleDirectory(file: file) {
+    fp.readdir(file.path)
+        .then((items) => {
+            items.forEach((item) => {
+                handleRunning(function () {
+                    return readFile(path.join(file.path, item), file)
+                })
+            })
+        });
+}
 
+function handleRunning(fn?: any) {
+    console.log(loadingArray.length, currentRunning);
+    if (fn) {
+        let task = function () {
+            currentRunning++;
+            fn()
+                .then(function () {
+                    handleRunning();
+                })
+                .catch(function (err: any) {
+                    console.warn(err);
+                    handleRunning();
+                })
+        }
+
+        if (currentRunning < LOADING_LIMIT) {
+            task();
+        } else {
+            loadingArray.push(task);
+        }
+    } else {
+        currentRunning--;
+        let task = loadingArray.shift();
+        if (task) {
+            task()
+        }
+
+    }
+
+}
+
+function appendChildren(file: file) {
+    if (file.parent)
+        store.get(file.parent).push(file);
+}
+
+function updateSizeOfAllParents(file: file) {
+    let parent: file = store.get(file.parent.path);
+    do {
+        parent.value += file.value;
+        if (parent.parent) {
+            parent = store.get(parent.parent.path);
+        } else {
+            console.log(parent.value)
+            parent = null;
+        }
+    } while (parent);
+    if (!updateTimer) {
+        updateTimer = setTimeout(function () {
+            treemap();
+            updateTimer = null;
+        }, 20)
+    }
+
+}
 

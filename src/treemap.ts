@@ -8,8 +8,7 @@ let CONTAINER: string;
 let isRendering = false;
 
 window.addEventListener('resize', function () {
-
-    CURRENT_DATA && Treemap(CONTAINER, CURRENT_DATA.path);
+    Treemap();
 });
 
 
@@ -20,12 +19,14 @@ let treemap = d3.treemap()
     .paddingOuter(4);
 
 
-let Treemap = function (containerSelector: string = CONTAINER, key: string = CURRENT_DATA.path) {
-    if (isRendering) return;
+let Treemap = function (containerSelector?: string, key?: string) {
+    let scanUpdate = !containerSelector && !key;
+    if (isRendering && scanUpdate) return;
 
     isRendering = true;
-    CURRENT_DATA = Object.assign({}, store.get(key));
-    CONTAINER = containerSelector;
+    let originalData = store.get(key || CURRENT_DATA.path);
+    CURRENT_DATA = Object.assign({}, store.get(key || CURRENT_DATA.path));
+    containerSelector = CONTAINER = containerSelector || CONTAINER;
 
     // d3.selectAll(containerSelector + ' .warper')
     //     .style('display', 'none');
@@ -39,7 +40,7 @@ let Treemap = function (containerSelector: string = CONTAINER, key: string = CUR
 
     CURRENT_DATA._value = CURRENT_DATA.value;
     CURRENT_DATA.value = 0;
-    CURRENT_DATA.children = store.get(`_children_` + CURRENT_DATA.path);
+    CURRENT_DATA.children = store.get(originalData);
 
 
     let root = d3.hierarchy(CURRENT_DATA);
@@ -53,10 +54,10 @@ let Treemap = function (containerSelector: string = CONTAINER, key: string = CUR
     let treeData: { data: any }[] = root.descendants();
 
     d3.select('#back')
-        .text(treeData[0].data.name + ' (' + treeData[0].data._value + 'Bytes)')
+        .text(path.normalize(treeData[0].data.path) + ' (' + numberToBytes(treeData[0].data._value) + ')')
         .on('click', function () {
             if (treeData[0].data.parent)
-                Treemap(containerSelector, treeData[0].data.parent);
+                Treemap(containerSelector, treeData[0].data.parent.path);
         });
 
     svg.selectAll('.warper')
@@ -107,20 +108,31 @@ let Treemap = function (containerSelector: string = CONTAINER, key: string = CUR
 
     warpers.select('header')
         .text(function (d: { data: any }, i) {
-            let text = i === 0 ? '' : d.data.name + ' (' + d.data.value + 'Bytes)';
+            let text = i === 0 ? '' : d.data.name + ' (' + numberToBytes(d.data.value) + ')';
             return text;
         })
 
-    warpers.transition()
-        .delay((d: any, i: number) => i * 10)
-        .duration(50)
-        .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
-        .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
-        .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
-        .on('end', function () {
-            isRendering = false;
-        });
-
+    if (scanUpdate) {
+        warpers
+            .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
+            .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
+            .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
+        isRendering = false;
+    } else {
+        debugger
+        warpers
+            .transition()
+            .delay((d: any, i: number) => i * 10)
+            .duration(50)
+            .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
+            .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
+            .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
+            .on('end', function () {
+                setTimeout(function () {
+                    isRendering = false;
+                }, 20)
+            });
+    }
 }
 
 function NTP(px: number) {
@@ -136,6 +148,18 @@ function stringToAscii(string: string) {
         .reduce(function (current, previous): any {
             return previous + '' + current;
         });
+}
+
+function numberToBytes(number: number) {
+    if (number === 0) return '0 Bytes';
+
+    const k = 1024;
+    const dm = 2;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(number) / Math.log(k));
+
+    return parseFloat((number / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
 export default Treemap;
