@@ -117,7 +117,9 @@ let Treemap = function (containerSelector?: string, key?: string) {
             .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
             .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
             .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
-        isRendering = false;
+        setTimeout(function () {
+            isRendering = false;
+        }, 20)
     } else {
         warpers
             .transition()
@@ -126,7 +128,8 @@ let Treemap = function (containerSelector?: string, key?: string) {
             .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
             .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
             .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
-            .on('end', function () {
+            .end()
+            .then(function () {
                 setTimeout(function () {
                     isRendering = false;
                 }, 20)

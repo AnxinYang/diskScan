@@ -5,17 +5,11 @@ import * as path from 'path';
 
 import treemap from './treemap';
 import store from './store';
-type file = {
-    name: string,
-    children: file[],
-    value: number,
-    path: string,
-    isDirectory: boolean,
-    parent: file,
-}
+import './types';
 
 
-const LOADING_LIMIT = 4;
+
+const LOADING_LIMIT = 32;
 let loadingArray: any[] = [];
 let currentRunning = 0;
 
