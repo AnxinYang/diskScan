@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 
-import treemap from './treemap';
+//import treemap from './treemap';
 import store from './store';
 type file = {
     name: string,
@@ -24,7 +24,7 @@ let updateTimer: NodeJS.Timeout | number;
 export default function (target: string = './') {
     readFile(target)
         .then(function () {
-            treemap('#treemap', target)
+            //treemap('#treemap', target)
         });
 }
 
@@ -123,6 +123,6 @@ function updateSizeOfAllParents(file: file) {
     } while (parent);
 
 
-    treemap()
+    //treemap()
 
 }

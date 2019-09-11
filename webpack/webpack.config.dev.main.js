@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     devtool: 'inline-source-map',
-    entry: './app.ts',
+    entry: './src/index_main.ts',
     mode: 'development',
     module: {
         rules: [{
@@ -11,10 +11,10 @@ module.exports = {
             exclude: /node_modules/
         }]
     },
-    target: "electron-renderer",
+    target: "electron-main",
     output: {
-        filename: 'client.js',
-        path: path.resolve(__dirname, './build')
+        filename: 'main.js',
+        path: path.resolve(__dirname, '../build')
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js']

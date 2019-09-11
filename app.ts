@@ -1,5 +1,10 @@
-import index from './src/index_render';
+//import index from './src/index_render';
 import store from './src/store';
 
 //index('W:/ui/node_modules');
-index('d:/');
+//index('w:/');
+
+const worker = new Worker('./build/worker.js');
+
+
+worker.postMessage('Start')
