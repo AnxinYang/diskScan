@@ -2,13 +2,13 @@
 import { BaseType } from 'd3-selection';
 
 
-// 
-export interface Transition<GElement extends BaseType, Datum, PElement extends BaseType, PDatum> {
-    end(): Promise<any>
+declare module "d3-transition" {
+    export interface Transition<GElement extends BaseType, Datum, PElement extends BaseType, PDatum> {
+        end(): Promise<any>
+    }
 }
 
-
-type file = {
+export type file = {
     name: string,
     children: file[],
     value: number,

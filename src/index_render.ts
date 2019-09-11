@@ -5,7 +5,7 @@ import * as path from 'path';
 
 import treemap from './treemap';
 import store from './store';
-import './types';
+import { file } from './types';
 
 
 

@@ -1,11 +1,13 @@
 import { ccd3 as d3 } from 'ccts';
 import store from './store';
 import * as path from 'path';
+import { file } from './types';
 const SIZE: [number, number] = [500, 500];
 
 let CURRENT_DATA: any;
 let CONTAINER: string;
 let isRendering = false;
+let holdRender: number | NodeJS.Timeout;
 
 window.addEventListener('resize', function () {
     Treemap();
@@ -21,15 +23,17 @@ let treemap = d3.treemap()
 
 let Treemap = function (containerSelector?: string, key?: string) {
     let scanUpdate = !containerSelector && !key;
-    if (isRendering && scanUpdate) return;
-
+    if (isRendering && scanUpdate) {
+        if (holdRender) {
+            clearTimeout(<number>holdRender);
+        }
+        holdRender = setTimeout(Treemap, 50)
+        return;
+    }
     isRendering = true;
     let originalData = store.get(key || CURRENT_DATA.path);
     CURRENT_DATA = Object.assign({}, store.get(key || CURRENT_DATA.path));
     containerSelector = CONTAINER = containerSelector || CONTAINER;
-
-    // d3.selectAll(containerSelector + ' .warper')
-    //     .style('display', 'none');
 
     let svg = d3.select(containerSelector)
         .style('position', `relative`);
@@ -112,7 +116,7 @@ let Treemap = function (containerSelector?: string, key?: string) {
             return text;
         })
 
-    if (scanUpdate) {
+    if (scanUpdate || treeData.length > 100) {
         warpers
             .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
             .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
