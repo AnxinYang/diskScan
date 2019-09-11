@@ -24,7 +24,6 @@ let updateTimer: NodeJS.Timeout | number;
 export default function (target: string = './') {
     readFile(target)
         .then(function () {
-            debugger;
             treemap('#treemap', target)
         });
 }

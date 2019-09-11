@@ -119,7 +119,6 @@ let Treemap = function (containerSelector?: string, key?: string) {
             .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
         isRendering = false;
     } else {
-        debugger
         warpers
             .transition()
             .delay((d: any, i: number) => i * 10)
