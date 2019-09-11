@@ -15,7 +15,7 @@ type file = {
 }
 
 
-const LOADING_LIMIT = 4;
+const LOADING_LIMIT = 32;
 let loadingArray: any[] = [];
 let currentRunning = 0;
 
@@ -81,7 +81,7 @@ function handleDirectory(file: file) {
 }
 
 function handleRunning(fn?: any) {
-    console.log(loadingArray.length, currentRunning);
+    //console.log(loadingArray.length, currentRunning);
     if (fn) {
         let task = function () {
             currentRunning++;
@@ -90,7 +90,7 @@ function handleRunning(fn?: any) {
                     handleRunning();
                 })
                 .catch(function (err: any) {
-                    console.warn(err);
+                    //console.warn(err);
                     handleRunning();
                 })
         }
@@ -123,16 +123,18 @@ function updateSizeOfAllParents(file: file) {
         if (parent.parent) {
             parent = store.get(parent.parent.path);
         } else {
-            console.log(parent.value)
+            //console.log(parent.value)
             parent = null;
         }
     } while (parent);
-    if (!updateTimer) {
-        updateTimer = setTimeout(function () {
-            treemap();
-            updateTimer = null;
-        }, 20)
-    }
+
+
+    treemap()
+    // if (!updateTimer) {
+    //     updateTimer = setTimeout(function () {
+    //         treemap();
+    //         updateTimer = null;
+    //     }, 0)
+    // }
 
 }
-
