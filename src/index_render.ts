@@ -64,6 +64,7 @@ export default function (target: string = './') {
             let item = targets[i];
             files.push(readTarget(path.join(<string>parent, item), parent));
         }
+
         updateAllParents(files, parent);
     }
 
