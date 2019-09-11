@@ -5,6 +5,7 @@ const SIZE: [number, number] = [500, 500];
 
 let CURRENT_DATA: any;
 let CONTAINER: string;
+let isRendering = false;
 
 window.addEventListener('resize', function () {
 
@@ -19,7 +20,10 @@ let treemap = d3.treemap()
     .paddingOuter(4);
 
 
-let Treemap = function (containerSelector: string, key: string) {
+let Treemap = function (containerSelector: string = CONTAINER, key: string = CURRENT_DATA.path) {
+    if (isRendering) return;
+
+    isRendering = true;
     CURRENT_DATA = Object.assign({}, store.get(key));
     CONTAINER = containerSelector;
 
@@ -112,15 +116,11 @@ let Treemap = function (containerSelector: string, key: string) {
         .duration(50)
         .style('transform', function (d: any) { return `translate(${(d.x0)}px, ${(d.y0)}px)` })
         .style('width', function (d: any) { return (d.x1 - d.x0) + 'px'; })
-        .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; });
-    //update();
-}
+        .style('height', function (d: any) { return (d.y1 - d.y0) + 'px'; })
+        .on('end', function () {
+            isRendering = false;
+        });
 
-let update = function () {
-    setTimeout(function () {
-        Treemap(CONTAINER, CURRENT_DATA.path);
-        update();
-    }, 500)
 }
 
 function NTP(px: number) {
