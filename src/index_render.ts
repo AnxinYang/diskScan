@@ -9,13 +9,18 @@ import { file } from './types';
 
 
 
-const LOADING_LIMIT = 32;
+const LOADING_LIMIT = 128;
 let loadingArray: any[] = [];
 let currentRunning = 0;
 
 let updateTimer: NodeJS.Timeout | number;
 
 export default function (target: string = './') {
+    store.clear()
+    loadingArray = [];
+    currentRunning = 0;
+    store.set('scanning', true)
+    store.set('fileNum', 0)
     readFile(target)
         .then(function () {
             treemap('#treemap', target)
@@ -56,6 +61,7 @@ function handleFile(file: file) {
     if (isDirectory) {
         handleDirectory(file);
     } else {
+        store.set('fileNum', store.get('fileNum') + 1);
         updateSizeOfAllParents(file)
     }
 }
@@ -95,6 +101,7 @@ function handleRunning(fn?: any) {
         if (task) {
             task()
         }
+        store.set('scanning', currentRunning > 0)
 
     }
 

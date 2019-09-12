@@ -38,3 +38,15 @@
     position: relative;
     flex-grow: 1;
 }
+
+.disk {
+    padding: 16px;
+    border: 1px solid $font-color-fine;
+    cursor: pointer;
+    margin: 8px;
+    border-radius: 4px;
+}
+
+.disk:hover {
+    border: 1px solid $color-selected;
+}

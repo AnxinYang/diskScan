@@ -25,3 +25,14 @@ body {
 label {
     font-weight: bold;
 }
+
+input {
+    font-size: $font-size-normal;
+    padding: 8px;
+    width: 100%;
+    color: black;
+}
+
+h4 {
+    margin: 16px 0px;
+}

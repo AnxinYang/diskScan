@@ -15,3 +15,33 @@
     width: 100%;
     flex-grow: 1;
 }
+
+#menu {
+    margin-top: 33vh;
+    padding: 0 33vw 100vh;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+#menu * {
+    color: rgb(32, 32, 32);
+}
+
+#path-input {
+    flex-grow: 1;
+    border: none;
+    border-bottom: 2px solid black;
+}
+#path-error {
+    //position: fixed;
+    color: red;
+    padding: 4px 0px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+#disks {
+    display: flex;
+    flex-wrap: wrap;
+}
