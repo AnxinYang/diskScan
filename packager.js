@@ -7,6 +7,9 @@ packager({
     overwrite: true,
     arch: 'x64',
     platform: 'win32',
+    prune: true,
+    out: path.join(__dirname, '/ssa'),
+    asar: true,
 })
     .then(function () {
         console.log('DONE...')
