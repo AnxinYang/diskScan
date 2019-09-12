@@ -107,7 +107,7 @@ let Treemap = function (containerSelector?: string, key?: string) {
             return d.data.isDirectory && i > 0;
         })
         .style('background-color', function (d: { data: any }, i) {
-            return d.data.isDirectory && i === 0 ? 'rgba(243, 156, 18, 0.3)' : '';
+            return d.data.isDirectory && i === 0 ? 'rgba(45, 52, 54, 0.5)' : '';
         })
         .attr('id', function (d: { data: any }) {
             return `f_` + stringToAscii(d.data.path);

@@ -2,48 +2,48 @@ import index from './src/index_render';
 import { Stats, promises as fp } from 'fs';
 import store from './src/store';
 import cc, { ccd3 as d3 } from 'ccts';
-//import { spawn } from 'child_process';
+import { spawn } from 'child_process';
 import { normalize } from 'path';
 import { remote } from 'electron';
 
 const { getCurrentWindow, globalShortcut } = remote;
 
-// let list = spawn('cmd');
-// let driveList: string[] = [];
-// let buffer = ''
-// list.stdout.on('data', function (data) {
-//     buffer += data.toString();
-// });
+let list = spawn('cmd');
+let driveList: string[] = [];
+let buffer = ''
+list.stdout.on('data', function (data) {
+    buffer += data.toString();
+});
 
-// list.stderr.on('data', function (data) {
-//     console.log('stderr: ' + data);
-// });
+list.stderr.on('data', function (data) {
+    console.log('stderr: ' + data);
+});
 
-// list.on('exit', function (code) {
-//     let arr = buffer.toString().split('\n');
-//     arr.forEach(function (item: string) {
-//         let trimmed = item.trim() + `\\`;
-//         if (trimmed.match(/^[a-zA-Z]:\\?$/gm)) {
-//             driveList.push(trimmed);
-//         }
-//     })
-//     console.log(driveList);
-//     console.log('child process exited with code ' + code);
+list.on('exit', function (code) {
+    let arr = buffer.toString().split('\n');
+    arr.forEach(function (item: string) {
+        let trimmed = item.trim() + `\\`;
+        if (trimmed.match(/^[a-zA-Z]:\\?$/gm)) {
+            driveList.push(trimmed);
+        }
+    })
+    console.log(driveList);
+    console.log('child process exited with code ' + code);
 
-//     cc.select(`#disks`)
-//         .selectAll('div')
-//         .data(driveList)
-//         .enter()
-//         .append('div')
-//         .classed('disk', true)
-//         .text(d => d)
-//         .on('click', function (d) {
-//             startScan(d);
-//         });
-// });
+    cc.select(`#disks`)
+        .selectAll('div')
+        .data(driveList)
+        .enter()
+        .append('div')
+        .classed('disk', true)
+        .text(d => d)
+        .on('click', function (d) {
+            startScan(d);
+        });
+});
 
-// list.stdin.write('wmic logicaldisk get name\n');
-// list.stdin.end();
+list.stdin.write('wmic logicaldisk get name\n');
+list.stdin.end();
 
 
 let menu = cc.select('#menu');

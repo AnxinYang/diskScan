@@ -1,13 +1,13 @@
 .warper {
     overflow: hidden;
     position: absolute;
-    background-color: rgba(243, 156, 18, 0.5);
+    background-color: rgba(45, 52, 54, 0.8);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .child :hover {
-    background: rgba(243, 156, 18, 1);
+    background: rgba(45, 52, 54, 1);
 }
 
 .file {
@@ -49,4 +49,5 @@
 
 .disk:hover {
     border: 1px solid $color-selected;
+    color: $color-selected !important;
 }

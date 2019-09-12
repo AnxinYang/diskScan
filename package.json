@@ -16,7 +16,7 @@
     "disk"
   ],
   "author": "GitHub",
-  "license": "CC0-1.0",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^12.7.5",
     "electron": "^6.0.7",
