@@ -22,6 +22,7 @@ export default function (target: string = './') {
     store.set('scanning', true)
     store.set('fileNum', 0)
     store.set('folderNum', 0);
+    store.set('errorNum', 0);
 
     readFile(target)
         .then(function () {
@@ -62,15 +63,15 @@ function handleFile(file: file) {
     appendChildren(file);
     if (isDirectory) {
         store.set('folderNum', store.get('folderNum') + 1);
-        handleDirectory(file);
+        return handleDirectory(file);
     } else {
         store.set('fileNum', store.get('fileNum') + 1);
-        updateSizeOfAllParents(file)
+        return updateSizeOfAllParents(file)
     }
 }
 
 function handleDirectory(file: file) {
-    fp.readdir(file.path)
+    return fp.readdir(file.path)
         .then((items) => {
             items.forEach((item) => {
                 handleRunning(function () {
@@ -89,6 +90,8 @@ function handleRunning(fn?: any) {
                     handleRunning();
                 })
                 .catch(function (err: any) {
+                    console.warn(err);
+                    store.set('errorNum', store.get('errorNum') + 1);
                     handleRunning();
                 })
         }
@@ -126,7 +129,5 @@ function updateSizeOfAllParents(file: file) {
         }
     } while (parent);
 
-
     treemap()
-
 }

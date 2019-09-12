@@ -29,22 +29,26 @@ input {
   color: black;
 }
 
+h4 {
+  margin: 16px 0px;
+}
+
 .warper {
   overflow: hidden;
   position: absolute;
-  background-color: rgba(255, 165, 2, 0.3);
+  background-color: rgba(243, 156, 18, 0.5);
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .child :hover {
-  background: #ffa502;
+  background: #f39c12;
 }
 
 .file {
   overflow: hidden;
   position: absolute;
-  background-color: rgba(9, 132, 227, 0.3);
+  background-color: rgba(9, 132, 227, 0.5);
 }
 
 .file :hover {
@@ -52,7 +56,6 @@ input {
 }
 
 .content-container {
-  border: 1px solid darkgoldenrod;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -85,7 +88,7 @@ input {
 }
 
 #back {
-  background-color: darkgoldenrod;
+  background-color: #2d3436;
   padding: 4px 8px;
   cursor: pointer;
 }

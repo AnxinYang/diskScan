@@ -56,13 +56,18 @@ let Treemap = function (containerSelector?: string, key?: string) {
     treemap(root);
 
     let treeData: { data: any }[] = root.descendants();
+    let errorNum = store.get('errorNum');
+    let folderNum = store.get('folderNum');
+    let fileNum = store.get('fileNum');
 
     d3.select('#back')
         .text(path.normalize(treeData[0].data.path)
             + ' (' + numberToBytes(treeData[0].data._value) + ') '
-            + (store.get('scanning') ? (Math.random() > 0.5 ? '[\\]' : '[/]') + ' Scanning... ' : '')
-            + d3.format(',')(store.get('folderNum')) + ' folders and '
-            + d3.format(',')(store.get('fileNum')) + ' files was scanned.')
+            + (store.get('scanning') ? (Math.random() > 0.5 ? '[\\]' : '[/]') + ' Scanning... ' : 'Completed. ')
+            + d3.format(',')(folderNum) + ' folders and '
+            + d3.format(',')(fileNum) + ' files were scanned. '
+            + (errorNum > 0 ? d3.format(',')(errorNum) + ' items were skipped (Not scan permission)' : ''))
+
         .on('click', function () {
             if (treeData[0].data.parent)
                 Treemap(containerSelector, treeData[0].data.parent.path);
@@ -100,6 +105,9 @@ let Treemap = function (containerSelector?: string, key?: string) {
         })
         .classed('child', function (d: { data: any }, i) {
             return d.data.isDirectory && i > 0;
+        })
+        .style('background-color', function (d: { data: any }, i) {
+            return d.data.isDirectory && i === 0 ? 'rgba(243, 156, 18, 0.3)' : '';
         })
         .attr('id', function (d: { data: any }) {
             return `f_` + stringToAscii(d.data.path);

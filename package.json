@@ -1,28 +1,26 @@
 {
-  "name": "electron-quick-start",
+  "name": "sds",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A simple disk scan tool.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "webpack -p --config ./webpack/webpack.config.production.js",
+    "build": "electron-forge make",
     "devRender": "webpack --config ./webpack/webpack.config.dev.render.js --watch",
     "devMain": "webpack --config ./webpack/webpack.config.dev.main.js --watch",
     "scss": "sass --watch src/main.scss build/main.css"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/anxinyang114/diskScan",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "disk management",
+    "disk"
   ],
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
     "@types/node": "^12.7.5",
-    "electron": "^6.0.7"
+    "electron": "^6.0.7",
+    "electron-packager": "^14.0.6"
   },
   "dependencies": {
     "ccts": "^1.1.9"

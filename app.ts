@@ -2,45 +2,48 @@ import index from './src/index_render';
 import { Stats, promises as fp } from 'fs';
 import store from './src/store';
 import cc, { ccd3 as d3 } from 'ccts';
-import { spawn } from 'child_process';
+//import { spawn } from 'child_process';
 import { normalize } from 'path';
+import { remote } from 'electron';
 
-let list = spawn('cmd');
-let driveList: string[] = [];
-let buffer = ''
-list.stdout.on('data', function (data) {
-    buffer += data.toString();
-});
+const { getCurrentWindow, globalShortcut } = remote;
 
-list.stderr.on('data', function (data) {
-    console.log('stderr: ' + data);
-});
+// let list = spawn('cmd');
+// let driveList: string[] = [];
+// let buffer = ''
+// list.stdout.on('data', function (data) {
+//     buffer += data.toString();
+// });
 
-list.on('exit', function (code) {
-    let arr = buffer.toString().split('\n');
-    arr.forEach(function (item: string) {
-        let trimmed = item.trim() + `\\`;
-        if (trimmed.match(/^[a-zA-Z]:\\?$/gm)) {
-            driveList.push(trimmed);
-        }
-    })
-    console.log(driveList);
-    console.log('child process exited with code ' + code);
+// list.stderr.on('data', function (data) {
+//     console.log('stderr: ' + data);
+// });
 
-    cc.select(`#disks`)
-        .selectAll('div')
-        .data(driveList)
-        .enter()
-        .append('div')
-        .classed('disk', true)
-        .text(d => d)
-        .on('click', function (d) {
-            startScan(d);
-        });
-});
+// list.on('exit', function (code) {
+//     let arr = buffer.toString().split('\n');
+//     arr.forEach(function (item: string) {
+//         let trimmed = item.trim() + `\\`;
+//         if (trimmed.match(/^[a-zA-Z]:\\?$/gm)) {
+//             driveList.push(trimmed);
+//         }
+//     })
+//     console.log(driveList);
+//     console.log('child process exited with code ' + code);
 
-list.stdin.write('wmic logicaldisk get name\n');
-list.stdin.end();
+//     cc.select(`#disks`)
+//         .selectAll('div')
+//         .data(driveList)
+//         .enter()
+//         .append('div')
+//         .classed('disk', true)
+//         .text(d => d)
+//         .on('click', function (d) {
+//             startScan(d);
+//         });
+// });
+
+// list.stdin.write('wmic logicaldisk get name\n');
+// list.stdin.end();
 
 
 let menu = cc.select('#menu');
@@ -85,3 +88,12 @@ function startScan(path: string) {
             console.error(err)
         })
 }
+
+
+
+globalShortcut.register('F5', getCurrentWindow().reload);
+globalShortcut.register('CommandOrControl+Shift+I', getCurrentWindow().webContents.toggleDevTools);
+window.addEventListener('beforeunload', () => {
+    globalShortcut.unregister('F5');
+    globalShortcut.unregister('CommandOrControl+Shift+I');
+})

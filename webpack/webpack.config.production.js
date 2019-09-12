@@ -2,8 +2,11 @@ const path = require('path');
 
 module.exports = {
     devtool: 'none',
-    entry: './app.ts',
-    mode: 'production',
+    entry: {
+        client: './app.ts',
+        worker: './worker.ts'
+    },
+    mode: 'development',
     module: {
         rules: [{
             test: /\.tsx?$/,
@@ -13,8 +16,8 @@ module.exports = {
     },
     target: "electron-renderer",
     output: {
-        filename: 'client.js',
-        path: path.resolve(__dirname, './build')
+        filename: '[name].js',
+        path: path.resolve(__dirname, '../build')
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js']

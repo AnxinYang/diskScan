@@ -1,26 +1,26 @@
 .warper {
     overflow: hidden;
     position: absolute;
-    background-color: rgba(255, 165, 2, 0.3);
+    background-color: rgba(243, 156, 18, 0.5);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .child :hover {
-    background: rgba(255, 165, 2, 1);
+    background: rgba(243, 156, 18, 1);
 }
 
 .file {
     overflow: hidden;
     position: absolute;
-    background-color: rgba(9, 132, 227, 0.3);
+    background-color: rgba(9, 132, 227, 0.5);
 }
 .file :hover {
     background-color: rgba(9, 132, 227, 1);
 }
 
 .content-container {
-    border: 1px solid darkgoldenrod;
+    //border: 1px solid darkgoldenrod;
     width: 100%;
     height: 100%;
     overflow: hidden;
