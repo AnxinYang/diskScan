@@ -48,8 +48,9 @@ let menu = cc.select('#menu');
 cc.select('#path-input')
     .on('keyup', function (e) {
         let { key, target } = d3.event;
-        cc.select('#menu #path-error')
-            .remove();
+        cc.select('#path-error')
+            .style('opacity', 0)
+            .text('');
         if (key === 'Enter') {
             startScan(target.value + '\\')
         }
@@ -71,18 +72,16 @@ function startScan(path: string) {
                         index(path)
                     });
             } else {
-                cc.select('#menu')
-                    .append('div')
-                    .attr('id', 'path-error')
+                cc.select('#path-error')
+                    .style('opacity', 0)
                     .text('Error: Target is not a valid directory.');
             }
 
         })
         .catch(err => {
-            cc.select('#menu')
-                .append('div')
-                .attr('id', 'path-error')
-                .text('Error: Cannot read the path ' + path);
+            cc.select('#path-error')
+                .style('opacity', 1)
+                .text('Error: Target is not a valid directory.');
             console.error(err)
         })
 }

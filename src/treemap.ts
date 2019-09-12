@@ -61,7 +61,8 @@ let Treemap = function (containerSelector?: string, key?: string) {
         .text(path.normalize(treeData[0].data.path)
             + ' (' + numberToBytes(treeData[0].data._value) + ') '
             + (store.get('scanning') ? (Math.random() > 0.5 ? '[\\]' : '[/]') + ' Scanning... ' : '')
-            + d3.format(",")(store.get('fileNum')) + ' files was scanned.')
+            + d3.format(',')(store.get('folderNum')) + ' folders and '
+            + d3.format(',')(store.get('fileNum')) + ' files was scanned.')
         .on('click', function () {
             if (treeData[0].data.parent)
                 Treemap(containerSelector, treeData[0].data.parent.path);

@@ -118,6 +118,8 @@ input {
   flex-grow: 1;
   border: none;
   border-bottom: 2px solid black;
+  padding: 8px 0 0 0;
+  outline: none;
 }
 
 #path-error {
@@ -126,6 +128,7 @@ input {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-size: 12px;
 }
 
 #disks {

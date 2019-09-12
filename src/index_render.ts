@@ -21,6 +21,8 @@ export default function (target: string = './') {
     currentRunning = 0;
     store.set('scanning', true)
     store.set('fileNum', 0)
+    store.set('folderNum', 0);
+
     readFile(target)
         .then(function () {
             treemap('#treemap', target)
@@ -59,6 +61,7 @@ function handleFile(file: file) {
     let isDirectory = file.isDirectory;
     appendChildren(file);
     if (isDirectory) {
+        store.set('folderNum', store.get('folderNum') + 1);
         handleDirectory(file);
     } else {
         store.set('fileNum', store.get('fileNum') + 1);
