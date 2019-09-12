@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-forge make",
+    "build": "node packager.js",
     "devRender": "webpack --config ./webpack/webpack.config.dev.render.js --watch",
     "devMain": "webpack --config ./webpack/webpack.config.dev.main.js --watch",
     "scss": "sass --watch src/main.scss build/main.css"
