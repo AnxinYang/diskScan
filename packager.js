@@ -38,8 +38,12 @@ if (!isProduction) {
             console.log('Process completed. Watching files...')
         });
 } else {
-    webpack(config, function () {
-        if (isProduction) {
+    webpack(config)
+        .run(function (err, stats) {
+            console.log(stats.toString({
+                chunks: false,
+                colors: true
+            }));
             console.log('Compiling CSS file...')
             let result = spawnSync('cmd', ['/c sass --no-source-map src/main.scss build/main.css']);
             console.log('CSS file compiled.')
@@ -47,8 +51,8 @@ if (!isProduction) {
                 .then(function () {
                     console.log('Process completed.')
                 })
-        }
-    })
+
+        })
 }
 
 
