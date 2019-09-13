@@ -6,7 +6,6 @@
   "scripts": {
     "start": "electron .",
     "build": "node packager.js production",
-    "devRender": "webpack --config ./webpack/webpack.config.dev.render.js --watch",
     "dev": "node packager.js",
     "scss": "sass --watch src/main.scss build/main.css"
   },

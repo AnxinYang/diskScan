@@ -6,7 +6,7 @@ module.exports = {
         client: './app.ts',
         worker: './worker.ts'
     },
-    mode: 'development',
+    mode: 'production',
     module: {
         rules: [{
             test: /\.tsx?$/,
