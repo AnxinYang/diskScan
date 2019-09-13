@@ -2,18 +2,17 @@ const packager = require('electron-packager');
 const path = require('path');
 const webpack = require('webpack');
 const config_production = require('./webpack/webpack.config.production.js');
-const config_dev = require('./webpack/webpack.config.dev.render.js');
+const config_dev = require('./webpack/webpack.config.dev.render');
 const argv = process.argv;
 const isProduction = argv.includes('production');
 
 
 
-console.log(`Compiling ${isProduction ? 'production' : 'development'} code...`)
+console.log(`Compiling ${isProduction ? 'production' : 'development'} code:`)
 
 const config = isProduction ? config_production : config_dev;
-let _stats;
 console.log(config)
-webpack(config, function () {
+const compiler = webpack(config, function () {
     if (isProduction) {
         packager({
             dir: path.join(__dirname, ''),
@@ -29,10 +28,11 @@ webpack(config, function () {
                 console.log('Done...')
             })
     }
-}).watch(config.watchOptions, function (err, stats) {
-    _stats = stats
+})
+
+const watching = compiler.watch(undefined, function (err, stats) {
     console.log(stats || '');
-    //console.error(err || '');
+    console.error(err || '');
 });
 
 (function wait() {
