@@ -9,9 +9,20 @@ const config_dev = require('./webpack/webpack.config.dev');
 const argv = process.argv;
 const isProduction = argv.includes('production');
 
+const config_packager = {
+    dir: path.join(__dirname, ''),
+    icon: path.join(__dirname, '/build/icon.ico'),
+    overwrite: true,
+    arch: 'x64',
+    platform: 'win32',
+    prune: true,
+    out: path.join(__dirname, '/ssa'),
+    asar: true,
+};
 
 
-console.log(`Compiling ${isProduction ? 'production' : 'development'} code:`)
+
+console.log(`Mode: ${isProduction ? 'production' : 'development'}`)
 
 const config = isProduction ? config_production : config_dev;
 if (!isProduction) {
@@ -24,23 +35,17 @@ if (!isProduction) {
                 chunks: false,
                 colors: true
             }));
+            console.log('Process completed. Watching files...')
         });
 } else {
     webpack(config, function () {
         if (isProduction) {
-            spawnSync('cmd', ['sass --no-source-map src/main.scss build/main.css'])
-            packager({
-                dir: path.join(__dirname, ''),
-                icon: path.join(__dirname, '/build/icon.ico'),
-                overwrite: true,
-                arch: 'x64',
-                platform: 'win32',
-                prune: true,
-                out: path.join(__dirname, '/ssa'),
-                asar: true,
-            })
+            console.log('Compiling CSS file...')
+            let result = spawnSync('cmd', ['/c sass --no-source-map src/main.scss build/main.css']);
+            console.log('CSS file compiled.')
+            packager(config_packager)
                 .then(function () {
-                    console.log('Done...')
+                    console.log('Process completed.')
                 })
         }
     })
