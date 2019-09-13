@@ -22,4 +22,9 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js']
     },
+    watch: true,
+    watchOptions: {
+        aggregateTimeout: 600,
+    }
+
 };
