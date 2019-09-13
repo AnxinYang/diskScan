@@ -6,8 +6,7 @@
   "scripts": {
     "start": "electron .",
     "build": "node packager.js production",
-    "dev": "node packager.js",
-    "scss": "sass --watch src/main.scss build/main.css"
+    "dev": "node packager.js"
   },
   "repository": "https://github.com/anxinyang114/diskScan",
   "keywords": [

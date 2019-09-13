@@ -35,7 +35,7 @@ if (!isProduction) {
                 chunks: false,
                 colors: true
             }));
-            console.log('Process completed. Watching files...')
+            console.log('Process completed. Watching files...');
         });
 } else {
     webpack(config)

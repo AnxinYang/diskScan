@@ -2,9 +2,11 @@ import { ccd3 as d3 } from 'ccts';
 import store from './store';
 import * as path from 'path';
 import { file } from './types';
+import { spawnSync } from 'child_process';
+
 const SIZE: [number, number] = [500, 500];
 
-let CURRENT_DATA: any;
+let CURRENT_DATA: file;
 let CONTAINER: string;
 let isRendering = false;
 let holdRender: number | NodeJS.Timeout;
@@ -61,7 +63,8 @@ let Treemap = function (containerSelector?: string, key?: string) {
     let fileNum = store.get('fileNum');
 
     d3.select('#back')
-        .text(path.normalize(treeData[0].data.path)
+        .text((CURRENT_DATA.parent ? 'Back | ' : '')
+            + path.normalize(treeData[0].data.path)
             + ' (' + numberToBytes(treeData[0].data._value) + ') '
             + (store.get('scanning') ? (Math.random() > 0.5 ? '[\\]' : '[/]') + ' Scanning... ' : 'Completed. ')
             + d3.format(',')(folderNum) + ' folders and '
@@ -99,7 +102,7 @@ let Treemap = function (containerSelector?: string, key?: string) {
         .classed('children-container', true);
 
     let warpers = svg.selectAll('.warper')
-
+        .attr('title', 'Right click to open in file explorer')
         .classed('file', function (d: { data: any }) {
             return !d.data.isDirectory;
         })
@@ -116,9 +119,12 @@ let Treemap = function (containerSelector?: string, key?: string) {
             if (!d.data.isDirectory) {
                 return;
             }
-
-
             Treemap(containerSelector, d.data.path);
+        })
+        .on('mousedown', function (d: { data: any }) {
+            if (d3.event.which === 3) {
+                spawnSync(`explorer.exe`, [`/select,${d.data.path}`])
+            };
         })
 
 
@@ -151,11 +157,6 @@ let Treemap = function (containerSelector?: string, key?: string) {
                 }, 20)
             });
     }
-}
-
-function NTP(px: number) {
-    //return px;
-    return px * 100 / SIZE[0];
 }
 
 function stringToAscii(string: string) {

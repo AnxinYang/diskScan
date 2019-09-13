@@ -36,23 +36,26 @@ h4 {
 .warper {
   overflow: hidden;
   position: absolute;
-  background-color: rgba(45, 52, 54, 0.8);
-  cursor: pointer;
+  background-color: #2d3436;
   transition: background-color 0.3s ease;
 }
 
+.child {
+  cursor: pointer;
+}
+
 .child :hover {
-  background: #2d3436;
+  background-color: #373e40;
 }
 
 .file {
   overflow: hidden;
   position: absolute;
-  background-color: rgba(9, 132, 227, 0.5);
+  background-color: #40739e;
 }
 
 .file :hover {
-  background-color: #0984e3;
+  background-color: #4a7da8;
 }
 
 .content-container {
@@ -139,3 +142,5 @@ h4 {
   display: flex;
   flex-wrap: wrap;
 }
+
+/*# sourceMappingURL=main.css.map */

@@ -15,4 +15,5 @@ export type file = {
     path: string,
     isDirectory: boolean,
     parent: file,
+    _value?: number,
 }
